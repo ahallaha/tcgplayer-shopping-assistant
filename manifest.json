@@ -1,0 +1,28 @@
+{
+    "manifest_version": 3,
+    "name": "TCGplayer seller lists",
+    "version": "1.0.0",
+    "content_scripts": [
+        {
+            "js": [
+                "main.js"
+            ],
+            "css": [
+                "styles.css"
+            ],
+            "html": [
+                "entry.html"
+            ],
+            "matches": [
+                "https://www.tcgplayer.com/*",
+                "https://cart.tcgplayer.com/shoppingcart"
+            ]
+        }
+    ],
+    "action": {
+        "default_popup": "entry.html"
+    },
+    "permissions": [
+        "storage"
+    ]
+}

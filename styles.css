@@ -1,0 +1,9 @@
+.listing-item.product-details__listings-results.seller-non-grata {
+    background-color: #ffcccc;
+    border: #d30311 2px solid
+}
+
+.listing-item.product-details__listings-results.super-seller {
+    background-color: #ccffcc;
+    border: #38a738 2px solid
+}
