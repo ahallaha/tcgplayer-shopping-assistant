@@ -97,11 +97,9 @@ function flagCartItems(indvSellerItems, directItems) {
             if (undesired.includes(sellerName)) {
                 item.classList.add("seller-non-grata")
                 item.getElementsByClassName("soldBySeller")[0].innerHTML = `❌ Sold by ${sellerName}`
-                break
             } else if (preferred.includes(sellerName)) {
                 item.classList.add("super-seller")
                 item.getElementsByClassName("soldBySeller")[0].innerHTML = `✔  Sold by ${sellerName}`
-                break
             }
         }
     }
