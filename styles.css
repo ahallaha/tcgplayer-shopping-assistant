@@ -7,3 +7,39 @@
     background-color: #ccffcc;
     border: #38a738 2px solid
 }
+
+.marketWrap.seller-non-grata {
+    background-color: #ffcccc;
+    border: #d30311 2px solid
+}
+
+.marketWrap.seller-non-grata tr {
+    background-color: #fafafa;
+}
+
+.marketWrap.super-seller {
+    background-color: #ccffcc;
+    border: #38a738 2px solid
+}
+
+.marketWrap.super-seller tr {
+    background-color: #fafafa;
+}
+
+.directWrap.seller-non-grata {
+    background-color: #ffcccc;
+    border: #d30311 2px solid
+}
+
+.directWrap.seller-non-grata tr {
+    background-color: #fafafa;
+}
+
+.directWrap.super-seller {
+    background-color: #ccffcc;
+    border: #38a738 2px solid
+}
+
+.directWrap.super-seller tr {
+    background-color: #fafafa;
+}
