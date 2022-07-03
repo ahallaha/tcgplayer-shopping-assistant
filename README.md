@@ -6,3 +6,4 @@ All seller names must be separated by semi-colons. Seller names are case sensiti
 
 ![seller entry](./assets/screenshots/entry.png)
 ![example](./assets/screenshots/example.png)
+![cart example](./assets/screenshots/cart-example.png)
