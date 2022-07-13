@@ -2,7 +2,6 @@ let undesiredLoaded = false
 let preferredLoaded = false
 let undesired = []
 let preferred = []
-let itemsFlagged = false
 
 chrome.storage.sync.get(["preferred"], result => {
     if (result) {
