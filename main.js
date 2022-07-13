@@ -2,6 +2,7 @@ let undesiredLoaded = false
 let preferredLoaded = false
 let undesired = []
 let preferred = []
+let itemsFlagged = false
 
 chrome.storage.sync.get(["preferred"], result => {
     if (result) {
@@ -96,11 +97,26 @@ function flagCartItems(indvSellerItems, directItems) {
 
             if (undesired.includes(sellerName)) {
                 item.classList.add("seller-non-grata")
-                item.getElementsByClassName("soldBySeller")[0].innerHTML = `❌ Sold by ${sellerName}`
+                const sellerUrl = Array.from(soldByElement.childNodes).find(node => node.nodeName.toUpperCase() === "A")
+                item.getElementsByClassName("soldBySeller")[0].textContent = `❌ Sold by `
+                createAnchor(soldByElement, sellerName, sellerUrl)
             } else if (preferred.includes(sellerName)) {
                 item.classList.add("super-seller")
-                item.getElementsByClassName("soldBySeller")[0].innerHTML = `✔  Sold by ${sellerName}`
+                const sellerUrl = Array.from(soldByElement.childNodes).find(node => node.nodeName.toUpperCase() === "A")
+                item.getElementsByClassName("soldBySeller")[0].innerHTML = `✔  Sold by `
+                createAnchor(soldByElement, sellerName, sellerUrl)
             }
         }
     }
+
+    cartObserver.disconnect()
+}
+
+function createAnchor(element, sellerName, sellerUrl) {
+    const a = document.createElement("a")
+    const link = document.createTextNode(sellerName)
+    a.appendChild(link)
+    a.title = sellerName
+    a.href = sellerUrl
+    element.appendChild(a)
 }
