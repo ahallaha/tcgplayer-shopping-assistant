@@ -4,6 +4,6 @@ This is a Chrome extension to flag preferred and undesired TCGplayer sellers.
 ## Instructions for use
 All seller names must be separated by semi-colons. Seller names are case sensitive. Spaces and newlines are allowed. Data for this extension will be synchronized across Chrome browsers that you are logged in to.
 
-![seller entry](./assets/screenshots/entry.png)
-![example](./assets/screenshots/example.png)
-![cart example](./assets/screenshots/cart-example.png)
+![seller entry](./screenshots/entry.png)
+![example](./screenshots/example.png)
+![cart example](./screenshots/cart-example.png)
