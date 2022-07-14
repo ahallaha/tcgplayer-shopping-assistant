@@ -88,21 +88,22 @@ function flagCartItems(indvSellerItems, directItems) {
 
     for (let item of directItems) {
         const soldByElements = item.getElementsByClassName("soldBySeller")
+
         for (let soldByElement of soldByElements) {
             const sellerName =
-                soldByElement.textContent
+                soldByElement.innerText
                     .replaceAll("Sold by ", "")
                     .trim()
 
             if (undesired.includes(sellerName.toLowerCase())) {
                 item.classList.add("seller-non-grata")
                 const sellerUrl = Array.from(soldByElement.childNodes).find(node => node.nodeName.toUpperCase() === "A")
-                item.getElementsByClassName("soldBySeller")[0].textContent = `❌ Sold by `
+                soldByElement.textContent = `❌ Sold by `
                 createAnchor(soldByElement, sellerName, sellerUrl)
             } else if (preferred.includes(sellerName.toLowerCase())) {
                 item.classList.add("super-seller")
                 const sellerUrl = Array.from(soldByElement.childNodes).find(node => node.nodeName.toUpperCase() === "A")
-                item.getElementsByClassName("soldBySeller")[0].innerHTML = `✔  Sold by `
+                soldByElement.textContent = `✔  Sold by `
                 createAnchor(soldByElement, sellerName, sellerUrl)
             }
         }
