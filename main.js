@@ -2,10 +2,11 @@ let undesiredLoaded = false
 let preferredLoaded = false
 let undesired = []
 let preferred = []
+let separator = ','
 
 chrome.storage.sync.get(["preferred"], result => {
     if (result) {
-        preferred = result.preferred.split(";").map(s => s.trim()).filter(x => x !== "")
+        preferred = result.preferred.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
     }
     preferredLoaded = true
     updatePage()
@@ -13,7 +14,7 @@ chrome.storage.sync.get(["preferred"], result => {
 
 chrome.storage.sync.get(["undesired"], result => {
     if (result) {
-        undesired = result.undesired.split(";").map(s => s.trim()).filter(x => x !== "")
+        undesired = result.undesired.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
     }
     undesiredLoaded = true
     updatePage()
@@ -54,17 +55,134 @@ function updatePage() {
     }
 }
 
+function addPreferredSeller (seller) {
+    
+    chrome.storage.sync.get(["preferred"], result => {
+        if (result) {
+            preferred = result.preferred.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
+            preferredLoaded = true
+            if(preferred.includes(seller)){
+                alert("Seller already in Preferred list")
+            } else {
+                var prefs = preferred + separator + seller
+                chrome.storage.sync.set({"preferred" : prefs })
+            }
+            
+        }
+    })
+
+    updatePage()
+}
+
+function addUndesiredSeller (seller) {
+    
+    chrome.storage.sync.get(["undesired"], result => {
+        if (result) {
+            undesired = result.undesired.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
+            undesiredLoaded = true
+            if(undesired.includes(seller)){
+                alert("Seller already in Undesired list")
+            } else{
+                var prefs = undesired + separator + seller
+                chrome.storage.sync.set({"undesired" : prefs })
+            }            
+        }
+    })
+
+    updatePage()
+}
+
+function removeSellerFromLists (seller) {
+
+    chrome.storage.sync.get(["undesired"], result => {
+        if (result) {
+            undesired = result.undesired.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
+            undesiredLoaded = true
+
+            undesired = undesired.filter(x => x !== seller)
+
+            chrome.storage.sync.set({"undesired" : undesired })
+        }
+    })
+
+    chrome.storage.sync.get(["preferred"], result => {
+        if (result) {
+            preferred = result.preferred.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
+            undesiredLoaded = true
+
+            var prefs = preferred.filter(x => x !== seller)
+
+            chrome.storage.sync.set({"preferred" : prefs })
+        }
+    })
+
+    updatePage()
+}
+
 function flagProductItems(details) {
+
     for (let item of details) {
         const sellerName = item.getElementsByClassName("seller-info__name")[0].textContent
+        var x = sellerName.trim();
         if (undesired.includes(sellerName.trim())) {
             item.classList.add("seller-non-grata")
             item.getElementsByClassName("seller-info__name")[0].textContent = `❌${sellerName} `
+
+            var clearBtn = document.createElement("button");
+            clearBtn.innerHTML = '↪Clear';
+            clearBtn.classList.add("clear-btn-styled");
+            clearBtn.onclick = (function (x) {
+                return function () {
+                    removeSellerFromLists(x);
+                };
+            })(x);
+
+            item.appendChild(clearBtn)
+
         } else if (preferred.includes(sellerName.trim())) {
             item.classList.add("super-seller")
             item.getElementsByClassName("seller-info__name")[0].textContent = `✔${sellerName} `
+
+            var clearBtn = document.createElement("button");
+            clearBtn.innerHTML = '↪Clear';
+            clearBtn.classList.add("clear-btn-styled");
+            clearBtn.onclick = (function (x) {
+                return function () {
+                    removeSellerFromLists(x);
+                };
+            })(x);
+
+            item.appendChild(clearBtn)
+        } else {
+            
+            var preferBtn = document.createElement("button");
+            preferBtn.innerHTML = '✔Prefer';
+            preferBtn.classList.add("preferred-btn-styled");
+            
+            preferBtn.onclick = (function (x) {
+                return function () {
+                    addPreferredSeller(x);
+                };
+            })(x);
+
+            item.appendChild(preferBtn)
+
+            var undesireBtn = document.createElement("button");
+            undesireBtn.innerHTML = '❌Avoid';
+            undesireBtn.classList.add("undesired-btn-styled");
+            
+            undesireBtn.onclick = (function (x) {
+                return function () {
+                    addUndesiredSeller(x);
+                };
+            })(x);
+
+            item.appendChild(undesireBtn)
+            
         }
+
     }
+
     productObserver.disconnect()
 }
 

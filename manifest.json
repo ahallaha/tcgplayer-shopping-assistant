@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
-    "name": "TCGplayer Seller Flagger",
-    "description": "An extension for flagging good (and bad) sellers on TCGplayer",
+    "name": "TCGplayer Seller Flagger Dev Clone",
+    "description": "An extension for flagging good (and bad) sellers on TCGplayer, developed by catchpennyaustinh",
     "version": "1.1.2",
     "content_scripts": [
         {
