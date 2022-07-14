@@ -40,6 +40,20 @@
     border: #38a738 2px solid
 }
 
+
+
 .directWrap.super-seller tr {
     background-color: #fafafa;
+}
+
+button.preferred-btn-styled {
+    width: min-content;
+}
+
+button.undesired-btn-styled {
+    width: min-content;
+}
+
+button.clear-btn-styled {
+    width: min-content;
 }
