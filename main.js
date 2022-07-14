@@ -6,7 +6,7 @@ let separator = ','
 
 chrome.storage.sync.get(["preferred"], result => {
     if (result) {
-        preferred = result.preferred.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
+        preferred = result.preferred.toString().split(/[,;]/).map(s => s.trim().toLowerCase()).filter(x => x !== "")
     }
     preferredLoaded = true
     updatePage()
@@ -14,7 +14,7 @@ chrome.storage.sync.get(["preferred"], result => {
 
 chrome.storage.sync.get(["undesired"], result => {
     if (result) {
-        undesired = result.undesired.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
+        undesired = result.undesired.toString().split(/[,;]/).map(s => s.trim().toLowerCase()).filter(x => x !== "")
     }
     undesiredLoaded = true
     updatePage()
@@ -59,7 +59,7 @@ function addPreferredSeller (seller) {
     
     chrome.storage.sync.get(["preferred"], result => {
         if (result) {
-            preferred = result.preferred.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
+            preferred = result.preferred.toString().split(/[,;]/).map(s => s.trim().toLowerCase()).filter(x => x !== "")
             preferredLoaded = true
             if(preferred.includes(seller)){
                 alert("Seller already in Preferred list")
@@ -78,7 +78,7 @@ function addUndesiredSeller (seller) {
     
     chrome.storage.sync.get(["undesired"], result => {
         if (result) {
-            undesired = result.undesired.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
+            undesired = result.undesired.toString().split(/[,;]/).map(s => s.trim().toLowerCase()).filter(x => x !== "")
             undesiredLoaded = true
             if(undesired.includes(seller)){
                 alert("Seller already in Undesired list")
@@ -96,7 +96,7 @@ function removeSellerFromLists (seller) {
 
     chrome.storage.sync.get(["undesired"], result => {
         if (result) {
-            undesired = result.undesired.toString().split(/[,;]/).map(s => s.trim()).filter(x => x !== "")
+            undesired = result.undesired.toString().split(/[,;]/).map(s => s.trim().toLowerCase()).filter(x => x !== "")
             undesiredLoaded = true
 
             undesired = undesired.filter(x => x !== seller)
@@ -123,8 +123,8 @@ function flagProductItems(details) {
 
     for (let item of details) {
         const sellerName = item.getElementsByClassName("seller-info__name")[0].textContent
-        var x = sellerName.trim();
-        if (undesired.includes(sellerName.trim())) {
+        var x = sellerName.trim().toLowerCase();
+        if (undesired.includes(sellerName.trim().toLowerCase())) {
             item.classList.add("seller-non-grata")
             item.getElementsByClassName("seller-info__name")[0].textContent = `❌${sellerName} `
 
@@ -139,7 +139,7 @@ function flagProductItems(details) {
 
             item.appendChild(clearBtn)
 
-        } else if (preferred.includes(sellerName.trim())) {
+        } else if (preferred.includes(sellerName.trim().toLowerCase())) {
             item.classList.add("super-seller")
             item.getElementsByClassName("seller-info__name")[0].textContent = `✔${sellerName} `
 
@@ -195,10 +195,10 @@ function flagCartItems(indvSellerItems, directItems) {
                 .replaceAll("Shop from this Seller", "")
                 .trim()
 
-        if (undesired.includes(sellerName)) {
+        if (undesired.includes(sellerName.toLowerCase())) {
             item.classList.add("seller-non-grata")
             item.getElementsByClassName("sellerName")[0].textContent = `❌ ${sellerName} `
-        } else if (preferred.includes(sellerName)) {
+        } else if (preferred.includes(sellerName.toLowerCase())) {
             item.classList.add("super-seller")
             item.getElementsByClassName("sellerName")[0].textContent = `✔ ${sellerName} `
         }
@@ -206,21 +206,22 @@ function flagCartItems(indvSellerItems, directItems) {
 
     for (let item of directItems) {
         const soldByElements = item.getElementsByClassName("soldBySeller")
+
         for (let soldByElement of soldByElements) {
             const sellerName =
-                soldByElement.textContent
+                soldByElement.innerText
                     .replaceAll("Sold by ", "")
                     .trim()
 
-            if (undesired.includes(sellerName)) {
+            if (undesired.includes(sellerName.toLowerCase())) {
                 item.classList.add("seller-non-grata")
                 const sellerUrl = Array.from(soldByElement.childNodes).find(node => node.nodeName.toUpperCase() === "A")
-                item.getElementsByClassName("soldBySeller")[0].textContent = `❌ Sold by `
+                soldByElement.textContent = `❌ Sold by `
                 createAnchor(soldByElement, sellerName, sellerUrl)
-            } else if (preferred.includes(sellerName)) {
+            } else if (preferred.includes(sellerName.toLowerCase())) {
                 item.classList.add("super-seller")
                 const sellerUrl = Array.from(soldByElement.childNodes).find(node => node.nodeName.toUpperCase() === "A")
-                item.getElementsByClassName("soldBySeller")[0].innerHTML = `✔  Sold by `
+                soldByElement.textContent = `✔  Sold by `
                 createAnchor(soldByElement, sellerName, sellerUrl)
             }
         }
