@@ -77,10 +77,10 @@ function flagCartItems(indvSellerItems, directItems) {
                 .replaceAll("Shop from this Seller", "")
                 .trim()
 
-        if (undesired.includes(sellerName)) {
+        if (undesired.includes(sellerName.toLowerCase())) {
             item.classList.add("seller-non-grata")
             item.getElementsByClassName("sellerName")[0].textContent = `❌ ${sellerName} `
-        } else if (preferred.includes(sellerName)) {
+        } else if (preferred.includes(sellerName.toLowerCase())) {
             item.classList.add("super-seller")
             item.getElementsByClassName("sellerName")[0].textContent = `✔ ${sellerName} `
         }
@@ -94,12 +94,12 @@ function flagCartItems(indvSellerItems, directItems) {
                     .replaceAll("Sold by ", "")
                     .trim()
 
-            if (undesired.includes(sellerName)) {
+            if (undesired.includes(sellerName.toLowerCase())) {
                 item.classList.add("seller-non-grata")
                 const sellerUrl = Array.from(soldByElement.childNodes).find(node => node.nodeName.toUpperCase() === "A")
                 item.getElementsByClassName("soldBySeller")[0].textContent = `❌ Sold by `
                 createAnchor(soldByElement, sellerName, sellerUrl)
-            } else if (preferred.includes(sellerName)) {
+            } else if (preferred.includes(sellerName.toLowerCase())) {
                 item.classList.add("super-seller")
                 const sellerUrl = Array.from(soldByElement.childNodes).find(node => node.nodeName.toUpperCase() === "A")
                 item.getElementsByClassName("soldBySeller")[0].innerHTML = `✔  Sold by `
