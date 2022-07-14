@@ -5,7 +5,7 @@ let preferred = []
 
 chrome.storage.sync.get(["preferred"], result => {
     if (result) {
-        preferred = result.preferred.split(";").map(s => s.trim()).filter(x => x !== "")
+        preferred = result.preferred.split(";").map(s => s.trim().toLowerCase()).filter(x => x !== "")
     }
     preferredLoaded = true
     updatePage()
@@ -13,7 +13,7 @@ chrome.storage.sync.get(["preferred"], result => {
 
 chrome.storage.sync.get(["undesired"], result => {
     if (result) {
-        undesired = result.undesired.split(";").map(s => s.trim()).filter(x => x !== "")
+        undesired = result.undesired.split(";").map(s => s.trim().toLowerCase()).filter(x => x !== "")
     }
     undesiredLoaded = true
     updatePage()
@@ -57,10 +57,10 @@ function updatePage() {
 function flagProductItems(details) {
     for (let item of details) {
         const sellerName = item.getElementsByClassName("seller-info__name")[0].textContent
-        if (undesired.includes(sellerName.trim())) {
+        if (undesired.includes(sellerName.trim().toLowerCase())) {
             item.classList.add("seller-non-grata")
             item.getElementsByClassName("seller-info__name")[0].textContent = `❌${sellerName} `
-        } else if (preferred.includes(sellerName.trim())) {
+        } else if (preferred.includes(sellerName.trim().toLowerCase())) {
             item.classList.add("super-seller")
             item.getElementsByClassName("seller-info__name")[0].textContent = `✔${sellerName} `
         }
