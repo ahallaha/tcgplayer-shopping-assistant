@@ -57,10 +57,10 @@ function updatePage() {
 function flagProductItems(details) {
     for (let item of details) {
         const sellerName = item.getElementsByClassName("seller-info__name")[0].textContent
-        if (undesired.includes(sellerName.trim().toLowerCase())) {
+        if (undesired.includes(cleanupSellerName(sellerName))) {
             item.classList.add("seller-non-grata")
             item.getElementsByClassName("seller-info__name")[0].textContent = `❌${sellerName} `
-        } else if (preferred.includes(sellerName.trim().toLowerCase())) {
+        } else if (preferred.includes(cleanupSellerName(sellerName))) {
             item.classList.add("super-seller")
             item.getElementsByClassName("seller-info__name")[0].textContent = `✔${sellerName} `
         }
