@@ -1,21 +1,26 @@
-const preferredInput = document.getElementById("preferred-sellers-input")
-const undesiredInput = document.getElementById("undesired-sellers-input")
+import { get, set } from "./storage";
+
+const preferredInput = document.getElementById("preferred-sellers-input");
+const undesiredInput = document.getElementById("undesired-sellers-input");
 
 document.getElementById("save-button").addEventListener("click", () => {
-    chrome.storage.sync.set({ "preferred": preferredInput.value })
-    chrome.storage.sync.set({ "undesired": undesiredInput.value })
-    window.close()
-})
+  set({ preferred: preferredInput.value });
+  set({ undesired: undesiredInput.value });
+  window.close();
+});
 
 window.onload = function () {
-    chrome.storage.sync.get(["preferred"], (result) => {
-        if (result) {
-            preferredInput.value = result.preferred
-        }
-    })
-    chrome.storage.sync.get(["undesired"], (result) => {
-        if (result) {
-            undesiredInput.value = result.undesired
-        }
-    })
-}
+  get("preferred", (result) => {
+    const preferred = result.preferred;
+    if (preferred) {
+      preferredInput.value = preferred;
+    }
+  });
+
+  get("undesired", (result) => {
+    const undesired = result.undesired;
+    if (undesired) {
+      undesiredInput.value = undesired;
+    }
+  });
+};

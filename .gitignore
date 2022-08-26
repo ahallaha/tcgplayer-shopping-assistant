@@ -1,1 +1,4 @@
-dist.zip
+*.zip
+*.min.js
+/storage.js
+/manifest.json

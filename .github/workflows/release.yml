@@ -5,7 +5,8 @@ on:
     branches:
       - "main"
 jobs:
-  create_release:
+  tag_release:
+    name: "Check Commit and Create Tag"
     runs-on: ubuntu-latest
     outputs:
       should_create: ${{ steps.increment_version.outputs.CREATE_RELEASE }}
@@ -18,12 +19,13 @@ jobs:
         id: increment_version
         uses: ./.github/actions/release
   build:
-    needs: create_release
-    name: "Release"
+    needs: tag_release
+    if: needs.tag_release.outputs.should_create == 'true'
+    name: "Create Release Artifacts"
     runs-on: ubuntu-latest
     outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      should_create: ${{ needs.create_release.outputs.should_create == 'true' }}
+      upload_url: ${{ steps.tag_release.outputs.upload_url }}
+      should_create: ${{ needs.tag_release.outputs.should_create }}
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -43,18 +45,33 @@ jobs:
         id: tag-name
         run: |
           echo "COMMIT_TAG=$(git tag | sort -V | tail -1)" >> $GITHUB_ENV
-      - name: Build
-        if: needs.create_release.outputs.should_create == 'true'
-        run: zip ./dist.zip ./icons entry.html main.js manifest.json popup.js styles.css
-      - name: Upload Artifact
-        if: needs.create_release.outputs.should_create == 'true'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Build Chrome Artifact
+        run: |
+          cp -a ./chrome/* .
+          npx rollup ./main.js --file ./main.min.js --format iife
+          npx rollup ./popup.js --file ./popup.min.js --format iife
+          zip ./chrome-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css
+      - name: Build Firefox Artifact
+        run: |
+          cp -a ./firefox/* .
+          npx rollup ./main.js --file ./main.min.js --format iife
+          npx rollup ./popup.js --file ./popup.min.js --format iife
+          zip ./firefox-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css
+      - name: Upload Chrome Artifact
         uses: actions/upload-artifact@main
         with:
-          name: dist.zip
-          path: dist.zip
+          name: chrome-dist.zip
+          path: chrome-dist.zip
+      - name: Upload Firefox Artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: firefox-dist.zip
+          path: firefox-dist.zip
       - name: Create Release
-        id: create_release
-        if: needs.create_release.outputs.should_create == 'true'
+        id: tag_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -65,24 +82,45 @@ jobs:
           draft: false
           prerelease: false
 
-  upload_artifact:
+  upload_chrome_artifact:
     needs: build
+    if: needs.build.outputs.should_create == 'true'
+    name: "Upload Chrome Artifact"
     runs-on: ubuntu-latest
     steps:
-      - name: download artifact
-        if: needs.build.output.should_create == 'true'
+      - name: download chrome artifact
         uses: actions/download-artifact@main
         with:
-          name: dist.zip
+          name: chrome-dist.zip
           path: ./
       - name: Upload Release Asset
         id: upload_release
-        if: needs.build.output.should_create == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.build.outputs.upload_url }}
-          asset_path: ./dist.zip
-          asset_name: dist.zip
+          asset_path: ./chrome-dist.zip
+          asset_name: chrome-dist.zip
+          asset_content_type: application/zip
+  upload_firefox_artifact:
+    needs: build
+    if: needs.build.outputs.should_create == 'true'
+    name: "Upload Firefox Artifact"
+    runs-on: ubuntu-latest
+    steps:
+      - name: download firefox artifact
+        uses: actions/download-artifact@main
+        with:
+          name: firefox-dist.zip
+          path: ./
+      - name: Upload Release Asset
+        id: upload_release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.build.outputs.upload_url }}
+          asset_path: ./firefox-dist.zip
+          asset_name: firefox-dist.zip
           asset_content_type: application/zip

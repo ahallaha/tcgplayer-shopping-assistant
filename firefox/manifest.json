@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "TCGplayer Seller Flagger",
+  "description": "An extension for flagging good (and bad) sellers on TCGplayer",
+  "version": "1.0.2",
+  "content_scripts": [
+    {
+      "js": ["main.min.js"],
+      "css": ["styles.css"],
+      "matches": [
+        "https://www.tcgplayer.com/product/*",
+        "https://cart.tcgplayer.com/shoppingcart"
+      ]
+    }
+  ],
+  "browser_action": {
+    "default_icon": "icons/icon-32.png",
+    "default_title": "TCGplayer Seller Flagger",
+    "default_popup": "entry.html"
+  },
+  "permissions": ["storage"],
+  "icons": {
+    "48": "icons/icon-48.png"
+  }
+}
