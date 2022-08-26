@@ -7,12 +7,15 @@ on:
 jobs:
   create_release:
     runs-on: ubuntu-latest
+    outputs:
+      should_create: ${{ steps.increment_version.outputs.CREATE_RELEASE }}
     steps:
       - name: Checkout
         uses: actions/checkout@main
         with:
           fetch-depth: 0
       - name: Increment Version
+        id: increment_version
         uses: ./.github/actions/release
   build:
     needs: create_release
@@ -20,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
+      should_create: ${{ needs.create_release.outputs.should_create == 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -40,14 +44,17 @@ jobs:
         run: |
           echo "COMMIT_TAG=$(git tag | sort -V | tail -1)" >> $GITHUB_ENV
       - name: Build
+        if: needs.create_release.outputs.should_create == 'true'
         run: zip ./dist.zip ./icons entry.html main.js manifest.json popup.js styles.css
       - name: Upload Artifact
+        if: needs.create_release.outputs.should_create == 'true'
         uses: actions/upload-artifact@main
         with:
           name: dist.zip
           path: dist.zip
       - name: Create Release
         id: create_release
+        if: needs.create_release.outputs.should_create == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -63,12 +70,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: download artifact
+        if: needs.build.output.should_create == 'true'
         uses: actions/download-artifact@main
         with:
           name: dist.zip
           path: ./
       - name: Upload Release Asset
         id: upload_release
+        if: needs.build.output.should_create == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

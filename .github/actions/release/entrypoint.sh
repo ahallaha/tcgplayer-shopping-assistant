@@ -48,9 +48,10 @@ elif grep -qE "^MINOR:" <<< "$COMMIT_MSG"; then
     tag "$(join_version "$(version_part "$BASE_TAG" 0)" "$(incr "$(version_part "$BASE_TAG" 1)")" 0)"
 elif grep -qE "^MAJOR:" <<< "$COMMIT_MSG"; then
     tag "$(join_version "$(incr "$(version_part "$BASE_TAG" 0)")" 0 0)"
-else
-    echo "Skipping release"
 fi
+
+echo "::set-output name=CREATE_RELEASE::true"
+
 
 git push --tags
 echo -e "Done"
