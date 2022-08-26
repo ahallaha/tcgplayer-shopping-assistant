@@ -3,7 +3,7 @@ name: release
 on:
   push:
     branches:
-      - "actions"
+      - "main"
 jobs:
   create_release:
     runs-on: ubuntu-latest
