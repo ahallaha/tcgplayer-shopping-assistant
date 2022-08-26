@@ -1,45 +1,58 @@
 .listing-item.product-details__listings-results.seller-non-grata {
-    background-color: #ffcccc;
-    border: #d30311 2px solid
+  background-color: #ffcccc;
+  border: #d30311 2px solid;
 }
 
 .listing-item.product-details__listings-results.super-seller {
-    background-color: #ccffcc;
-    border: #38a738 2px solid
+  background-color: #ccffcc;
+  border: #38a738 2px solid;
 }
 
 .marketWrap.seller-non-grata {
-    background-color: #ffcccc;
-    border: #d30311 2px solid
+  background-color: #ffcccc;
+  border: #d30311 2px solid;
 }
 
 .marketWrap.seller-non-grata tr {
-    background-color: #fafafa;
+  background-color: #fafafa;
 }
 
 .marketWrap.super-seller {
-    background-color: #ccffcc;
-    border: #38a738 2px solid
+  background-color: #ccffcc;
+  border: #38a738 2px solid;
 }
 
 .marketWrap.super-seller tr {
-    background-color: #fafafa;
+  background-color: #fafafa;
 }
 
 .directWrap.seller-non-grata {
-    background-color: #ffcccc;
-    border: #d30311 2px solid
+  background-color: #ffcccc;
+  border: #d30311 2px solid;
 }
 
 .directWrap.seller-non-grata tr {
-    background-color: #fafafa;
+  background-color: #fafafa;
 }
 
 .directWrap.super-seller {
-    background-color: #ccffcc;
-    border: #38a738 2px solid
+  background-color: #ccffcc;
+  border: #38a738 2px solid;
 }
 
 .directWrap.super-seller tr {
-    background-color: #fafafa;
+  background-color: #fafafa;
 }
+
+.orderHeader span:nth-child(4) {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* .orderHeader span:nth-child(4) input {
+    flex: 1 1 calc(100% - 50px);
+}
+
+.orderHeader span:nth-child(4) input:nth-child(odd) {
+    flex: 0 0 50px;
+} */
