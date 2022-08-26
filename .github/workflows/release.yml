@@ -53,13 +53,13 @@ jobs:
           cp -a ./chrome/* .
           npx rollup ./main.js --file ./main.min.js --format iife
           npx rollup ./popup.js --file ./popup.min.js --format iife
-          zip ./chrome-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css
+          zip -r ./chrome-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css
       - name: Build Firefox Artifact
         run: |
           cp -a ./firefox/* .
           npx rollup ./main.js --file ./main.min.js --format iife
           npx rollup ./popup.js --file ./popup.min.js --format iife
-          zip ./firefox-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css
+          zip -r ./firefox-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css
       - name: Upload Chrome Artifact
         uses: actions/upload-artifact@main
         with:

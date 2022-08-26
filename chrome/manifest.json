@@ -18,6 +18,6 @@
   },
   "permissions": ["storage"],
   "icons": {
-    "32": "./icons/32.png"
+    "32": "./icons/icon-32.png"
   }
 }
