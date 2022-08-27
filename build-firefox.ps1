@@ -31,4 +31,4 @@ if (-not (Test-Path -Path $7zipPath -PathType Leaf)) {
 }
 
 Set-Alias 7zip $7zipPath
-7zip a -tzip $ZipPath "./icons", "entry.html", "main.min.js", "manifest.json", "popup.min.js", "styles.css"
+7zip a -tzip $ZipPath "./icons", "entry.html", "main.min.js", "manifest.json", "popup.min.js", "styles.css", "popup.css"

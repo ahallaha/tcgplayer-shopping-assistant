@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <link rel="stylesheet" href="popup.css"></link>
+  </head>
   <body>
     <div>
-      <label for="preferred-sellers-input">Preferred Sellers:</label>
+      <label for="preferred-sellers-input" class="input-label">Preferred Sellers:</label>
       <br />
       <textarea
         name="text"
+        class="seller-input"
         id="preferred-sellers-input"
         placeholder="Preferred sellers go here"
       ></textarea>
     </div>
     <br />
     <div>
-      <label for="undesired-sellers-input">Undesired Sellers:</label>
+      <label for="undesired-sellers-input" class="input-label">Undesired Sellers:</label>
       <br />
       <textarea
         name="text"
+        class="seller-input"
         id="undesired-sellers-input"
         placeholder="Undesired sellers go here"
       ></textarea>
     </div>
     <br />
-    <button class="button" id="save-button">Save</button>
-    <script src="popup.min.js"></script>
+    <button class="button save-button" id="save-button">Save</button>
   </body>
+  <footer>
+    <script src="popup.min.js"></script>
+  </footer>
 </html>

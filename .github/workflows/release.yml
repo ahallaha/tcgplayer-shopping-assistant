@@ -3,7 +3,7 @@ name: release
 on:
   push:
     branches:
-      - "main"
+      - "publish"
 jobs:
   tag_release:
     name: "Check Commit and Create Tag"
@@ -53,13 +53,13 @@ jobs:
           cp -a ./chrome/* .
           npx rollup ./main.js --file ./main.min.js --format iife
           npx rollup ./popup.js --file ./popup.min.js --format iife
-          zip -r ./chrome-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css
+          zip -r ./chrome-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css popup.css
       - name: Build Firefox Artifact
         run: |
           cp -a ./firefox/* .
           npx rollup ./main.js --file ./main.min.js --format iife
           npx rollup ./popup.js --file ./popup.min.js --format iife
-          zip -r ./firefox-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css
+          zip -r ./firefox-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css popup.css
       - name: Upload Chrome Artifact
         uses: actions/upload-artifact@main
         with:
@@ -124,3 +124,48 @@ jobs:
           asset_path: ./firefox-dist.zip
           asset_name: firefox-dist.zip
           asset_content_type: application/zip
+
+  publish_chrome_extension:
+    needs: build
+    if: needs.build.outputs.should_create == 'true'
+    name: "Publish Chrome Extension"
+    runs-on: ubuntu-latest
+    steps:
+      - name: download chrome zip
+        uses: actions/download-artifact@main
+        with:
+          name: chrome-dist.zip
+          path: ./
+      - name: publish chrome extension
+        uses: Klemensas/chrome-extension-upload-action@$VERSION
+        with:
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          file-name: "./chrome-dist.zip"
+          app-id: "mhdggnlkeihohoglnbhhmcleflegjnee"
+          publish: false
+  publish_firefox_extension:
+    needs: build
+    if: needs.build.outputs.should_create == 'true'
+    name: "Publish Firefox Add-On"
+    runs-on: ubuntu-latest
+    steps:
+      - name: download firefox zip
+        uses: actions/download-artifact@main
+        with:
+          name: firefox-dist.zip
+          path: ./
+      - name: download firefox manifest
+        uses: actions/download-artifact@main
+        with:
+          name: firefox/manifest.json
+          path: ./firefox
+      - name: publish firefox extension
+        uses: trmcnvn/firefox-addon@v1
+        with:
+          uuid: "{aeca63dc-05a3-4b95-9e42-0760d3cbcf03}"
+          xpi: firefox-dist.zip
+          manifest: firefox/manifest.json
+          api-key: ${{ secrets.FIREFOX_API_KEY }}
+          api-secret: ${{ secrets.FIREFOX_API_SECRET }}
