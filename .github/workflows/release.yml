@@ -70,60 +70,60 @@ jobs:
         with:
           name: firefox-dist.zip
           path: firefox-dist.zip
-      - name: Create Release
-        id: tag_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.COMMIT_TAG }}
-          release_name: Release ${{ env.COMMIT_TAG }}
-          body: ${{ env.COMMIT_MSG }}
-          draft: false
-          prerelease: false
+      # - name: Create Release
+      #   id: tag_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ env.COMMIT_TAG }}
+      #     release_name: Release ${{ env.COMMIT_TAG }}
+      #     body: ${{ env.COMMIT_MSG }}
+      #     draft: false
+      #     prerelease: false
 
-  upload_chrome_artifact:
-    needs: build
-    if: needs.build.outputs.should_create == 'true'
-    name: "Upload Chrome Artifact"
-    runs-on: ubuntu-latest
-    steps:
-      - name: download chrome artifact
-        uses: actions/download-artifact@main
-        with:
-          name: chrome-dist.zip
-          path: ./
-      - name: Upload Release Asset
-        id: upload_release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.build.outputs.upload_url }}
-          asset_path: ./chrome-dist.zip
-          asset_name: chrome-dist.zip
-          asset_content_type: application/zip
-  upload_firefox_artifact:
-    needs: build
-    if: needs.build.outputs.should_create == 'true'
-    name: "Upload Firefox Artifact"
-    runs-on: ubuntu-latest
-    steps:
-      - name: download firefox artifact
-        uses: actions/download-artifact@main
-        with:
-          name: firefox-dist.zip
-          path: ./
-      - name: Upload Release Asset
-        id: upload_release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.build.outputs.upload_url }}
-          asset_path: ./firefox-dist.zip
-          asset_name: firefox-dist.zip
-          asset_content_type: application/zip
+  # upload_chrome_artifact:
+  #   needs: build
+  #   if: needs.build.outputs.should_create == 'true'
+  #   name: "Upload Chrome Artifact"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: download chrome artifact
+  #       uses: actions/download-artifact@main
+  #       with:
+  #         name: chrome-dist.zip
+  #         path: ./
+  #     - name: Upload Release Asset
+  #       id: upload_release
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.build.outputs.upload_url }}
+  #         asset_path: ./chrome-dist.zip
+  #         asset_name: chrome-dist.zip
+  #         asset_content_type: application/zip
+  # upload_firefox_artifact:
+  #   needs: build
+  #   if: needs.build.outputs.should_create == 'true'
+  #   name: "Upload Firefox Artifact"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: download firefox artifact
+  #       uses: actions/download-artifact@main
+  #       with:
+  #         name: firefox-dist.zip
+  #         path: ./
+  #     - name: Upload Release Asset
+  #       id: upload_release
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.build.outputs.upload_url }}
+  #         asset_path: ./firefox-dist.zip
+  #         asset_name: firefox-dist.zip
+  #         asset_content_type: application/zip
 
   publish_chrome_extension:
     needs: build
@@ -137,7 +137,7 @@ jobs:
           name: chrome-dist.zip
           path: ./
       - name: publish chrome extension
-        uses: Klemensas/chrome-extension-upload-action@$VERSION
+        uses: Klemensas/chrome-extension-upload-action@master
         with:
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
@@ -159,7 +159,7 @@ jobs:
       - name: download firefox manifest
         uses: actions/download-artifact@main
         with:
-          name: firefox/manifest.json
+          name: manifest.json
           path: ./firefox
       - name: publish firefox extension
         uses: trmcnvn/firefox-addon@v1
