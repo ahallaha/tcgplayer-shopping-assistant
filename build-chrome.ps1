@@ -25,7 +25,7 @@ if (Test-Path "popup.min.js") {
 npx rollup ./popup.js --file ./popup.min.js --format iife
 
 $compress = @{
-  Path             = "./icons", "entry.html", "main.min.js", "manifest.json", "popup.min.js", "styles.css"
+  Path             = "./icons", "entry.html", "main.min.js", "manifest.json", "popup.min.js", "styles.css", "popup.css"
   CompressionLevel = "Fastest"
   DestinationPath  = $ZipPath
 }

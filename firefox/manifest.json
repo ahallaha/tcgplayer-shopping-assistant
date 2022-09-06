@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "TCGplayer Seller Flagger",
   "description": "An extension for flagging good (and bad) sellers on TCGplayer",
-  "version": "1.0.2",
+  "version": "2.0.1",
   "content_scripts": [
     {
       "js": ["main.min.js"],
