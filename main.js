@@ -11,7 +11,7 @@ let storageLocations = {};
 get("preferred", (result) => {
   if (result) {
     preferred = result.preferred
-      .split(/[,;]/)
+      .split(/[,;\n]/)
       .map(cleanupSellerName)
       .filter((x) => x);
   }
@@ -22,7 +22,7 @@ get("preferred", (result) => {
 get("undesired", (result) => {
   if (result) {
     undesired = result.undesired
-      .split(/[,;]/)
+      .split(/[,;\n]/)
       .map(cleanupSellerName)
       .filter((x) => x);
   }
