@@ -1,9 +1,12 @@
 import { get, onChanged } from "./storage";
+import { fetchLocation } from "./utils";
 
 let undesiredLoaded = false;
 let preferredLoaded = false;
+let locationsLoaded = false;
 let undesired = [];
 let preferred = [];
+let storageLocations = {};
 
 get("preferred", (result) => {
   if (result) {
@@ -28,8 +31,19 @@ get("undesired", (result) => {
   updatePage();
 });
 
-onChanged((_, __) => {
-  location.reload();
+get("locations", (result) => {
+  if (result && result.locations) {
+    storageLocations = result.locations;
+  }
+
+  locationsLoaded = true;
+  updatePage();
+});
+
+onChanged((payload, _) => {
+  if (payload.preferred || payload.undesired) {
+    location.reload();
+  }
 });
 
 const productObserver = new MutationObserver((_, __) => {
@@ -51,7 +65,10 @@ const cartObserver = new MutationObserver((_, __) => {
 
 function updatePage() {
   if (undesiredLoaded && preferredLoaded) {
-    if (window.location.href.includes("tcgplayer.com/product")) {
+    if (
+      window.location.href.includes("tcgplayer.com/product") &&
+      locationsLoaded
+    ) {
       productObserver.observe(document, {
         childList: true,
         subtree: true,
@@ -69,6 +86,7 @@ function updatePage() {
 
 function flagProductItems(details) {
   for (let item of details) {
+    // get good/bad sellers
     const sellerName =
       item.getElementsByClassName("seller-info__name")[0].textContent;
     if (undesired.includes(cleanupSellerName(sellerName))) {
@@ -81,6 +99,19 @@ function flagProductItems(details) {
       item.getElementsByClassName(
         "seller-info__name"
       )[0].textContent = `✔ ${sellerName} `;
+    }
+
+    // get seller state
+    if (!storageLocations || !storageLocations[sellerName]) {
+      fetchLocation(
+        item,
+        storageLocations,
+        sellerName,
+        getSellerLocation,
+        addSellerLocation
+      );
+    } else {
+      addSellerLocation(item, storageLocations[sellerName]);
     }
   }
   productObserver.disconnect();
@@ -144,4 +175,23 @@ function appendAnchor(element, sellerName, sellerUrl) {
 
 function cleanupSellerName(rawName) {
   return rawName.trim().toLowerCase();
+}
+
+function getSellerLocation(html) {
+  const doc = document.createElement("html");
+  doc.innerHTML = html;
+  const sellerInfo = doc.getElementsByClassName("sellerInfo")[0];
+  let location = "Location: Direct";
+  if (sellerInfo) {
+    location = Array.from(sellerInfo.childNodes).filter(
+      (node) => node.nodeName.toUpperCase() === "P"
+    )[1].textContent;
+  }
+
+  return location;
+}
+
+function addSellerLocation(item, location) {
+  const t = document.createTextNode(location);
+  item.getElementsByClassName("seller-info")[0].appendChild(t);
 }

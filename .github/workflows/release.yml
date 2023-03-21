@@ -166,8 +166,6 @@ jobs:
         with:
           name: manifest.json
           path: ./
-      - name: print directory contents
-        run: ls .
       - name: publish firefox extension
         uses: trmcnvn/firefox-addon@v1
         with:

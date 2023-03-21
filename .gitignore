@@ -2,3 +2,5 @@
 *.min.js
 /storage.js
 /manifest.json
+/utils.js
+/backgroundScript.js
