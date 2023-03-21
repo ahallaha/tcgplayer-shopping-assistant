@@ -53,7 +53,7 @@ jobs:
           cp -a ./chrome/* .
           npx rollup ./main.js --file ./main.min.js --format iife
           npx rollup ./popup.js --file ./popup.min.js --format iife
-          zip -r ./chrome-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css popup.css
+          zip -r ./chrome-dist.zip ./icons entry.html main.min.js manifest.json popup.min.js styles.css popup.css backgroundScript.js
       - name: Build Firefox Artifact
         run: |
           cp -a ./firefox/* .
