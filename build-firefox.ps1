@@ -14,6 +14,11 @@ if (Test-Path "storage.js") {
 }
 Copy-Item "./firefox/storage.js" -Destination "./storage.js"
 
+if (Test-Path "utils.js") {
+  Remove-Item "utils.js"
+}
+Copy-Item "./firefox/utils.js" -Destination "./utils.js"
+
 if (Test-Path "main.min.js") {
   Remove-Item "main.min.js"
 }

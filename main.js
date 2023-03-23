@@ -9,7 +9,7 @@ let preferred = [];
 let storageLocations = {};
 
 get("preferred", (result) => {
-  if (result) {
+  if (result && result.preferred) {
     preferred = result.preferred
       .split(/[,;\n]/)
       .map(cleanupSellerName)
@@ -20,7 +20,7 @@ get("preferred", (result) => {
 });
 
 get("undesired", (result) => {
-  if (result) {
+  if (result && result.undesired) {
     undesired = result.undesired
       .split(/[,;\n]/)
       .map(cleanupSellerName)
