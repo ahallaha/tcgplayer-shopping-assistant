@@ -1,104 +1,117 @@
-import { get, onChanged } from "./storage";
-import { fetchLocation } from "./utils";
+import { get, onChanged } from "./storage"
+import { fetchLocation } from "./utils"
 
-let undesiredLoaded = false;
-let preferredLoaded = false;
-let locationsLoaded = false;
-let undesired = [];
-let preferred = [];
-let storageLocations = {};
+// Selectors for the elements we read and modify
+// Used for checking if product details have been displayed
+const productDetailsSelector = ".listing-item.product-details__listings-results"
+// Used for reading and modifying seller name text in product list
+const sellerNameInProductListSelector = ".seller-info__name"
+// Used to get non-direct seller tabs in cart
+const cartSectionSelector = "section.tab-content.non-direct-package"
+// Used for checking if items from individual sellers in cart have been displayed
+// and for reading and modifying individual seller name text in cart
+const shippedBySellerSelector = '[data-testid="linkPackageSellerName"]'
+// Used to get seller location
+const sellerLocationSelector = ".sellerInfo"
+// Used to add seller location in product list
+const sellerInfoInProductListSelector = ".seller-info"
+
+let undesired = []
+let preferred = []
+let storageLocations = {}
 
 get("preferred", (result) => {
   if (result && result.preferred) {
     preferred = result.preferred
       .split(/[,;\n]/)
       .map(cleanupSellerName)
-      .filter((x) => x);
+      .filter((x) => x)
   }
-  preferredLoaded = true;
-  updatePage();
-});
+})
 
 get("undesired", (result) => {
   if (result && result.undesired) {
     undesired = result.undesired
       .split(/[,;\n]/)
       .map(cleanupSellerName)
-      .filter((x) => x);
+      .filter((x) => x)
   }
-
-  undesiredLoaded = true;
-  updatePage();
-});
+})
 
 get("locations", (result) => {
   if (result && result.locations) {
-    storageLocations = result.locations;
+    storageLocations = result.locations
   }
-
-  locationsLoaded = true;
-  updatePage();
-});
+})
 
 onChanged((payload, _) => {
   if (payload.preferred || payload.undesired) {
-    location.reload();
+    location.reload()
   }
-});
+})
+
+const mainObserver = new MutationObserver((_, __) => {
+  if (window.location.href.includes("tcgplayer.com/product")) {
+    productObserver.observe(document, {
+      childList: true,
+      subtree: true,
+    })
+  }
+
+  if (window.location.href.includes("tcgplayer.com/cart")) {
+    cartObserver.observe(document, {
+      childList: true,
+      subtree: true,
+    })
+  }
+})
 
 const productObserver = new MutationObserver((_, __) => {
-  const details = document.getElementsByClassName(
-    "listing-item product-details__listings-results"
-  );
+  const details = document.querySelectorAll(productDetailsSelector)
+
   if (details.length > 0) {
-    flagProductItems(details);
+    flagProductItems(details)
   }
-});
+})
 
 const cartObserver = new MutationObserver((_, __) => {
-  const indvSellerItems = document.getElementsByClassName("marketWrap");
-  const directItems = document.getElementsByClassName("directWrap");
-  if (indvSellerItems.length > 0 || directItems.length > 0) {
-    flagCartItems(indvSellerItems, directItems);
-  }
-});
+  const indvSellerItems = Array.from(
+    document.querySelectorAll(cartSectionSelector)
+  )
 
-function updatePage() {
-  if (undesiredLoaded && preferredLoaded) {
-    if (
-      window.location.href.includes("tcgplayer.com/product") &&
-      locationsLoaded
-    ) {
-      productObserver.observe(document, {
-        childList: true,
-        subtree: true,
-      });
-    } else if (
-      window.location.href === "https://cart.tcgplayer.com/shoppingcart"
-    ) {
-      cartObserver.observe(document, {
-        childList: true,
-        subtree: true,
-      });
-    }
+  // Need to check for textContent to make sure elements are hydrated
+  if (indvSellerItems.length > 0 && indvSellerItems[0].textContent) {
+    flagCartItems(indvSellerItems)
+    cartObserver.disconnect()
   }
+})
+
+function createObserver() {
+  mainObserver.observe(document, {
+    childList: true,
+    subtree: true,
+  })
 }
+
+window.onload = createObserver
 
 function flagProductItems(details) {
   for (let item of details) {
     // get good/bad sellers
-    const sellerName =
-      item.getElementsByClassName("seller-info__name")[0].textContent;
+    const sellerName = item.querySelector(
+      sellerNameInProductListSelector
+    ).textContent
+
     if (undesired.includes(cleanupSellerName(sellerName))) {
-      item.classList.add("seller-non-grata");
-      item.getElementsByClassName(
-        "seller-info__name"
-      )[0].textContent = `❌ ${sellerName} `;
+      item.classList.add("seller-non-grata")
+      item.querySelector(
+        sellerNameInProductListSelector
+      ).textContent = `❌ ${sellerName} `
     } else if (preferred.includes(cleanupSellerName(sellerName))) {
-      item.classList.add("super-seller");
-      item.getElementsByClassName(
-        "seller-info__name"
-      )[0].textContent = `✔ ${sellerName} `;
+      item.classList.add("super-seller")
+      item.querySelector(
+        sellerNameInProductListSelector
+      ).textContent = `✔ ${sellerName} `
     }
 
     // get seller state
@@ -106,92 +119,57 @@ function flagProductItems(details) {
       fetchLocation(
         item,
         storageLocations,
+        sellerNameInProductListSelector,
         sellerName,
         getSellerLocation,
         addSellerLocation
-      );
+      )
     } else {
-      addSellerLocation(item, storageLocations[sellerName]);
+      addSellerLocation(item, storageLocations[sellerName])
     }
   }
-  productObserver.disconnect();
+  productObserver.disconnect()
 }
 
-function flagCartItems(indvSellerItems, directItems) {
+// Note: Direct sellers are no longer listed alongside their direct items in your cart
+function flagCartItems(indvSellerItems) {
   for (let item of indvSellerItems) {
-    const shippedByElements = item.getElementsByClassName("shippedBySeller");
-    const sellerName = shippedByElements[0].textContent
-      .replaceAll("Shipped by ", "")
-      .replaceAll("Shop from this Seller", "");
+    const sellerLabel = item.querySelector(shippedBySellerSelector)
+    const sellerName = sellerLabel.textContent
 
     if (undesired.includes(cleanupSellerName(sellerName))) {
-      item.classList.add("seller-non-grata");
-      item.getElementsByClassName(
-        "sellerName"
-      )[0].textContent = `❌${sellerName}`;
+      item.classList.add("seller-non-grata")
+      sellerLabel.textContent = `❌${sellerName}`
     } else if (preferred.includes(cleanupSellerName(sellerName))) {
-      item.classList.add("super-seller");
-      item.getElementsByClassName(
-        "sellerName"
-      )[0].textContent = `✔${sellerName}`;
+      item.classList.add("super-seller")
+      sellerLabel.textContent = `✔${sellerName}`
     }
   }
-
-  for (let item of directItems) {
-    const soldByElements = item.getElementsByClassName("soldBySeller");
-
-    for (let soldByElement of soldByElements) {
-      const sellerName = soldByElement.innerText.replaceAll("Sold by ", "");
-
-      if (undesired.includes(cleanupSellerName(sellerName))) {
-        item.classList.add("seller-non-grata");
-        const sellerUrl = Array.from(soldByElement.childNodes).find(
-          (node) => node.nodeName.toUpperCase() === "A"
-        );
-        soldByElement.textContent = `❌ Sold by `;
-        appendAnchor(soldByElement, sellerName, sellerUrl);
-      } else if (preferred.includes(cleanupSellerName(sellerName))) {
-        item.classList.add("super-seller");
-        const sellerUrl = Array.from(soldByElement.childNodes).find(
-          (node) => node.nodeName.toUpperCase() === "A"
-        );
-        soldByElement.textContent = `✔ Sold by `;
-        appendAnchor(soldByElement, sellerName, sellerUrl);
-      }
-    }
-  }
-
-  cartObserver.disconnect();
-}
-
-function appendAnchor(element, sellerName, sellerUrl) {
-  const a = document.createElement("a");
-  const link = document.createTextNode(sellerName);
-  a.appendChild(link);
-  a.title = sellerName;
-  a.href = sellerUrl;
-  element.appendChild(a);
 }
 
 function cleanupSellerName(rawName) {
-  return rawName.trim().toLowerCase();
+  return rawName.trim().toLowerCase()
 }
 
 function getSellerLocation(html) {
-  const doc = document.createElement("html");
-  doc.innerHTML = html;
-  const sellerInfo = doc.getElementsByClassName("sellerInfo")[0];
-  let location = "Location: Direct";
+  const doc = document.createElement("html")
+  doc.innerHTML = html
+  const sellerInfo = doc.querySelector(sellerLocationSelector)
+  let location = "Location: Direct"
   if (sellerInfo) {
     location = Array.from(sellerInfo.childNodes).filter(
       (node) => node.nodeName.toUpperCase() === "P"
-    )[1].textContent;
+    )[1].textContent
   }
 
-  return location;
+  return location
 }
 
 function addSellerLocation(item, location) {
-  const t = document.createTextNode(location);
-  item.getElementsByClassName("seller-info")[0].appendChild(t);
+  if (!item.querySelector(".location")) {
+    const t = document.createElement("span")
+    t.textContent = location
+    t.classList = ["location"]
+    item.querySelector(sellerInfoInProductListSelector).appendChild(t)
+  }
 }

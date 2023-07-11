@@ -1,45 +1,25 @@
 .listing-item.product-details__listings-results.seller-non-grata {
-    background-color: #ffcccc;
-    border: #d30311 2px solid
+  background-color: #ffcccc;
+  border: #d30311 2px solid;
 }
 
 .listing-item.product-details__listings-results.super-seller {
-    background-color: #ccffcc;
-    border: #38a738 2px solid
+  background-color: #ccffcc;
+  border: #38a738 2px solid;
 }
 
-.marketWrap.seller-non-grata {
-    background-color: #ffcccc;
-    border: #d30311 2px solid
+.tab-content.non-direct-package.seller-non-grata {
+  border: #d30311 2px solid;
 }
 
-.marketWrap.seller-non-grata tr {
-    background-color: #fafafa;
+.tab-content.non-direct-package.seller-non-grata::after {
+  background-color: #ffcccc;
 }
 
-.marketWrap.super-seller {
-    background-color: #ccffcc;
-    border: #38a738 2px solid
+.tab-content.non-direct-package.super-seller {
+  border: #38a738 2px solid;
 }
 
-.marketWrap.super-seller tr {
-    background-color: #fafafa;
-}
-
-.directWrap.seller-non-grata {
-    background-color: #ffcccc;
-    border: #d30311 2px solid
-}
-
-.directWrap.seller-non-grata tr {
-    background-color: #fafafa;
-}
-
-.directWrap.super-seller {
-    background-color: #ccffcc;
-    border: #38a738 2px solid
-}
-
-.directWrap.super-seller tr {
-    background-color: #fafafa;
+.tab-content.non-direct-package.super-seller::after {
+  background-color: #ccffcc;
 }
