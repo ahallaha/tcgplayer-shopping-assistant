@@ -14,10 +14,10 @@ if (Test-Path "storage.js") {
 }
 Copy-Item "./firefox/storage.js" -Destination "./storage.js"
 
-if (Test-Path "utils.js") {
-  Remove-Item "utils.js"
+if (Test-Path "backgroundScriptTriggers.js") {
+  Remove-Item "backgroundScriptTriggers.js"
 }
-Copy-Item "./firefox/utils.js" -Destination "./utils.js"
+Copy-Item "./firefox/backgroundScriptTriggers.js" -Destination "./backgroundScriptTriggers.js"
 
 if (Test-Path "main.min.js") {
   Remove-Item "main.min.js"

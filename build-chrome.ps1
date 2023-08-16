@@ -19,10 +19,10 @@ if (Test-Path "backgroundScript.js") {
 }
 Copy-Item "./chrome/backgroundScript.js" -Destination "./backgroundScript.js"
 
-if (Test-Path "utils.js") {
-  Remove-Item "utils.js"
+if (Test-Path "backgroundScriptTriggers.js") {
+  Remove-Item "backgroundScriptTriggers.js"
 }
-Copy-Item "./chrome/utils.js" -Destination "./utils.js"
+Copy-Item "./chrome/backgroundScriptTriggers.js" -Destination "./backgroundScriptTriggers.js"
 
 if (Test-Path "main.min.js") {
   Remove-Item "main.min.js"

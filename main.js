@@ -1,5 +1,5 @@
-import { get, onChanged } from "./storage"
-import { fetchLocation } from "./utils"
+import { get, set, onChanged } from "./storage"
+import { fetchSellerData } from "./backgroundScriptTriggers"
 
 // Selectors for the elements we read and modify
 // Used for checking if product details have been displayed
@@ -116,18 +116,20 @@ function flagProductItems(details) {
 
     // get seller state
     if (!storageLocations || !storageLocations[sellerName]) {
-      fetchLocation(
-        item,
-        storageLocations,
-        sellerNameInProductListSelector,
-        sellerName,
-        getSellerLocation,
-        addSellerLocation
-      )
+      const sellerNameElem = item.querySelector(sellerNameInProductListSelector)
+      if (sellerNameElem) {
+        fetchSellerData(
+          sellerNameElem.href,
+          item,
+          sellerName,
+          processSellerData
+        )
+      }
     } else {
       addSellerLocation(item, storageLocations[sellerName])
     }
   }
+
   productObserver.disconnect()
 }
 
@@ -151,7 +153,14 @@ function cleanupSellerName(rawName) {
   return rawName.trim().toLowerCase()
 }
 
-function getSellerLocation(html) {
+function processSellerData(html, item, sellerName) {
+  const location = extractSellerLocation(html)
+  addSellerLocation(item, location)
+  storageLocations[sellerName] = location
+  set({ locations: storageLocations })
+}
+
+function extractSellerLocation(html) {
   const doc = document.createElement("html")
   doc.innerHTML = html
   const sellerInfo = doc.querySelector(sellerLocationSelector)
