@@ -8,10 +8,10 @@ export function fetchLocation(
   getLocation,
   setLocation
 ) {
-  const sellerNames = item.querySelectorAll(sellerNameSelector)
+  const sellerNames = item.querySelector(sellerNameSelector)
 
-  if (sellerNames.length) {
-    const url = sellerNames[0].href
+  if (sellerNames) {
+    const url = sellerNames.href
     chrome.runtime.sendMessage(
       { contentScriptQuery: "queryState", url },
       (html) => {

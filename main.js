@@ -25,7 +25,7 @@ get("preferred", (result) => {
     preferred = result.preferred
       .split(/[,;\n]/)
       .map(cleanupSellerName)
-      .filter((x) => x)
+      .filter(Boolean)
   }
 })
 
@@ -34,7 +34,7 @@ get("undesired", (result) => {
     undesired = result.undesired
       .split(/[,;\n]/)
       .map(cleanupSellerName)
-      .filter((x) => x)
+      .filter(Boolean)
   }
 })
 
