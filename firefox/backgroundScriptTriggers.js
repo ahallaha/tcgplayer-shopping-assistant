@@ -1,4 +1,4 @@
-export function fetchLocation(
+export function fetchSellerData(
   item,
   storageLocations,
   sellerName,
