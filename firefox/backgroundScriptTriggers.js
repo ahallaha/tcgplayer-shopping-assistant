@@ -1,3 +1,9 @@
-export function fetchSellerData(url, item, sellerName, processSellerData) {
+export function fetchLocation(
+  item,
+  storageLocations,
+  sellerName,
+  getLocation,
+  setLocation
+) {
   // Not implemented
 }

@@ -4,21 +4,17 @@ import { fetchSellerData } from "./backgroundScriptTriggers"
 // Selectors for the elements we read and modify
 // Used for checking if product details have been displayed
 const productDetailsSelector = ".listing-item.product-details__listings-results"
+// Used for reading and modifying seller name text in product list
+const sellerNameInProductListSelector = ".seller-info__name"
 // Used to get non-direct seller tabs in cart
 const cartSectionSelector = "section.tab-content.non-direct-package"
 // Used for checking if items from individual sellers in cart have been displayed
 // and for reading and modifying individual seller name text in cart
 const shippedBySellerSelector = '[data-testid="linkPackageSellerName"]'
-// Used to get location from seller page
+// Used to get seller location
 const sellerLocationSelector = ".sellerInfo"
-// Used to get negative reviews from seller page
-const negativeReviewsSelector = "td.negative"
-// Used to add seller info item in product list
+// Used to add seller location in product list
 const sellerInfoInProductListSelector = ".seller-info"
-// Used for reading and modifying seller name text in product list
-const sellerNameInProductListSelector = ".seller-info__name"
-// Used to get element with seller icons in product list
-const sellerIconRowSelector = ".seller-info__content"
 
 let undesired = []
 let preferred = []
@@ -158,29 +154,15 @@ function cleanupSellerName(rawName) {
 }
 
 function processSellerData(html, item, sellerName) {
-  const doc = document.createElement("html")
-  doc.innerHTML = html
-
-  const location = extractSellerLocation(doc)
+  const location = extractSellerLocation(html)
   addSellerLocation(item, location)
   storageLocations[sellerName] = location
   set({ locations: storageLocations })
-
-  // Flag sellers that have > 1 recent negative reviews
-  const negativeRatings = doc.querySelectorAll(negativeReviewsSelector)
-  if (negativeRatings.length > 1) {
-    const iconsRow = item.querySelector(sellerIconRowSelector)
-    if (!iconsRow.querySelector(".recent-negative")) {
-      const t = document.createElement("span")
-      t.textContent = "❗"
-      t.classList.add("recent-negative")
-      t.title = "This seller has had multiple recent negative reviews."
-      iconsRow.prepend(t)
-    }
-  }
 }
 
-function extractSellerLocation(doc) {
+function extractSellerLocation(html) {
+  const doc = document.createElement("html")
+  doc.innerHTML = html
   const sellerInfo = doc.querySelector(sellerLocationSelector)
   let location = "Location: Direct"
   if (sellerInfo) {
