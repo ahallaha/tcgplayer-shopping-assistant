@@ -1,4 +1,4 @@
-# TCGplayer Seller Flagger
+# TCGplayer Shopping Assistant
 Repo for the TCGplayer Seller Flagger Chrome and Firefox browser extensions.
 
 ## Instructions for use
