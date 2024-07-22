@@ -1,11 +1,11 @@
-.listing-item.product-details__listings-results.seller-non-grata {
-  background-color: #ffcccc;
-  border: #d30311 2px solid;
+.listing-item.seller-non-grata {
+  background-color: #ffcccc !important;
+  border: #d30311 2px solid !important;
 }
 
-.listing-item.product-details__listings-results.super-seller {
-  background-color: #ccffcc;
-  border: #38a738 2px solid;
+.listing-item.super-seller {
+  background-color: #ccffcc !important;
+  border: #38a738 2px solid !important;
 }
 
 .tab-content.non-direct-package.seller-non-grata {

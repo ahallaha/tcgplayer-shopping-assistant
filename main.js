@@ -3,7 +3,7 @@ import { fetchSellerData } from "./backgroundScriptTriggers"
 
 // Selectors for the elements we read and modify
 // Used for checking if product details have been displayed
-const productDetailsSelector = ".listing-item.product-details__listings-results"
+const productDetailsSelector = ".listing-item"
 // Used for reading and modifying seller name text in product list
 const sellerNameInProductListSelector = ".seller-info__name"
 // Used to get non-direct seller tabs in cart
