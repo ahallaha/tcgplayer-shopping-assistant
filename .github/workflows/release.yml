@@ -147,7 +147,7 @@ jobs:
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          file-name: "./chrome-dist.zip"
+          file-path: "./chrome-dist.zip"
           app-id: "mhdggnlkeihohoglnbhhmcleflegjnee"
           publish: false
   publish_firefox_extension:
